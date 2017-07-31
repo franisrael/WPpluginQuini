@@ -48,13 +48,15 @@ class CrontrolQuini {
 	 */
 	protected function __construct() {
 
-		add_filter('the_content', 'hello_talcual');
+		$plugin_file = plugin_basename( __FILE__ );
+
+		add_filter( 'the_content', array($this, 'hello_talcual' ) );
 	}
 
 	// This just echoes the chosen line, we'll position it later
-function hello_talcual($input) {
-	echo $input."<p Hello this is a try</p>";
-}
+	function hello_talcual() {
+		echo "<p> Hello this is a try</p>";
+	}
 
 
 	/* Get any loteriasyapuestas body
