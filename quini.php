@@ -48,69 +48,17 @@ class CrontrolQuini {
 	 */
 	protected function __construct() {
 
-		$plugin_file = plugin_basename( __FILE__ );
+//		$plugin_file = plugin_basename( __FILE__ );
 
-		add_filter( 'the_content', array($this, 'hello_talcual' ) );
+		define( 'CD_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+
+		require_once (CD_PLUGIN_PATH.'class.lya.php');
+
+		$lya = new Lya();
+
+
 	}
 
-	// This just echoes the chosen line, we'll position it later
-	function hello_talcual() {
-		echo "<p> Hello this is a try</p>";
-	}
-
-
-	/* Get any loteriasyapuestas body
-	 * Argument uri to exact page
-	*/
-	protected function retrive_loteriasyapuestas_body($uri = "/es/la-quiniela"){
-		$baseurl = "http://www.loteriasyapuestas.es";
-		$response = wp_remote_get( 'http://www.loteriasyapuestas.es'.$uri );
-		$body = wp_remote_retrieve_body($response);
-	}
-
-	/**
-	 * A function used to programmatically create a post in WordPress. The slug, author ID, and title
-	 * are defined within the context of the function.
-	 *
-	 * @returns -1 if the post was never created, -2 if a post with the same title exists, or the ID
-	 *          of the post if successful.
-	 */
-	function programmatically_create_post() {
-
-		// Initialize the page ID to -1. This indicates no action has been taken.
-		$post_id = -1;
-
-		// Setup the author, slug, and title for the post
-		$author_id = 1;
-		$slug = 'post-quini';
-		$title = 'Quini Post';
-
-		// If the page doesn't already exist, then create it
-		if( null == get_page_by_title( $title ) ) {
-
-			// Set the post ID so that we know the post was created successfully
-			$post_id = wp_insert_post(
-				array(
-					'comment_status'	=>	'open',
-					'ping_status'		=>	'open',
-					'post_author'		=>	$author_id,
-					'post_name'			=>	$slug,
-					'post_title'		=>	$title,
-					'post_status'		=>	'publish',
-					'post_type'			=>	'post',
-					'date'				=>	'Jornada prueba'
-				)
-			);
-
-		// Otherwise, we'll stop
-		} else {
-
-	    		// Arbitrarily use -2 to indicate that the page with the title already exists
-	    		$post_id = -2;
-
-		} // end if
-
-	} // end programmatically_create_post
 
 	public static function init() {
 
@@ -126,3 +74,4 @@ class CrontrolQuini {
 }
 // Get this show on the road
 CrontrolQuini::init();
+
