@@ -37,14 +37,14 @@ class Lya {
 	public function retrive_loteriasyapuestas_body($uri = "/es/la-quiniela"){
 		$quiniurl = "http://www.loteriasyapuestas.es";
 		$urix = $quiniurl.$uri;
-		echo "<a href='$urix' target='_blank'>Go!</a>";
-		echo $urix;
+//		echo "<a href='$urix' target='_blank'>Go!</a>";
+//		echo $urix."<br>";
 		$response = wp_remote_get( $quiniurl.$uri );
 		$body = wp_remote_retrieve_body($response);
 		return $body;
 	}
 
-	/* Get the future draws from lya web
+	/* Get the future quiniela draws from lya web
 	 * 
 	*/
 	public function quini_draw_regex($body){
@@ -60,7 +60,7 @@ class Lya {
 		$regex2 = '~vermas">[.|\n|\r\n|\t]*?<a href="(.*)"~';
 		$hits = preg_match_all($regex2, $body, $matches_urls, PREG_PATTERN_ORDER);
 
-		echo date('Y-M-D')."<br>";
+		//echo date('Y-M-D')."<br>";
 		//print_r($matches_dates);
 		//print_r($matches_urls);
 
@@ -71,8 +71,8 @@ class Lya {
 			if ($result[0]->title <= 0) {
 				
 				$draw = trim($matches_dates[1][$i]);
-				echo $draw;
-				echo "<br>";
+		//		echo $draw;
+		//		echo "<br>";
 				$uri = trim($matches_urls[1][$i]);
 				
 				
@@ -80,26 +80,25 @@ class Lya {
 				$uri = trim($uri);
 				$len = strlen($uri);
 				$uri = html_entity_decode($uri);
-				echo $len." uri lenght <br>";
-				echo "<pre>$uri</pre>";
-				var_dump($uri);
-				
-				echo "<br>";
-
-				$uri2 = "/es/buscador?startDate=13/08/2017&gameId=06&type=search&endDate=13/08/2017";
-				$len2 = strlen($uri2);
-				echo $len2." uri lenght <br>";
-				echo "<pre>$uri2</pre>";
-				var_dump($uri2);
-				echo "<br>";
-				echo "The two string are = ".strcmp($uri, $uri2);
-				echo "<br>";
 
 				$body = $this->retrive_loteriasyapuestas_body( $uri );
 				$regex3 = '~anteriores"\shref="(.*)"~';
-			//	$hits2 = preg_match_all($regex3, $body, $matches_urls2, PREG_PATTERN_ORDER);
-			//	print_r($matches_urls2);
+				$hits2 = preg_match_all($regex3, $body, $matches_urls2, PREG_PATTERN_ORDER);
+				//print_r($matches_urls2);
 				echo "<br>";
+
+				$uri2 = $matches_urls2[1][0];
+				$body = $this->retrive_loteriasyapuestas_body( $uri2 );
+				$regex4 = '~tituloRegion">[.|\n|\r\n|\t]*?<h2>(.*)</h2>~';
+				$hits4 = preg_match_all($regex4, $body, $matches_title, PREG_PATTERN_ORDER);
+				echo "<br>".$matches_title[1][1]."<br>";
+		//		print_r($matches_title);
+				echo "<br>";
+		//		$regexCRS = '~<h3>([.|\n|\r\n|\t]*?.*)</h3>~';
+		//		$hits5 = preg_match_all($regexCRS, $body, $matches_datas, PREG_PATTERN_ORDER);
+		//		echo $hits5;
+				//echo $body;
+		//		print_r($matches_datas);
 			}
 		}
 	}
@@ -199,19 +198,6 @@ class Lya {
 		} // end if
 
 	} // end programmatically_create_post
-
-	public static function init() {
-
-		static $instance = null;
-
-		if ( ! $instance ) {
-			$instance = new CrontrolQuini;
-		}
-
-		return $instance;
-
-	}
 }
-// Get this show on the road
-//CrontrolQuini::init();
+
 
